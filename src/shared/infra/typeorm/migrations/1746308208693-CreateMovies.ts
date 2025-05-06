@@ -8,20 +8,20 @@ export class CreateMovies1746308208693 implements MigrationInterface {
         columns: [
           {
             name: "id",
-            type: "varchar(255)",
+            type: "varchar",
             isPrimary: true,
           },
           {
             name: "user_id",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "title",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "original_title",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "overview",
@@ -29,21 +29,21 @@ export class CreateMovies1746308208693 implements MigrationInterface {
           },
           {
             name: "tagline",
-            type: "varchar(255)",
+            type: "varchar",
             isNullable: true,
           },
           {
             name: "image",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "image_secondary",
-            type: "varchar(255)",
+            type: "varchar",
             isNullable: true,
           },
           {
             name: "trailer_url",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "popularity",
@@ -63,11 +63,11 @@ export class CreateMovies1746308208693 implements MigrationInterface {
           },
           {
             name: "status",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "language",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "budget",

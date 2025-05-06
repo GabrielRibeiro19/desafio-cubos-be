@@ -6,6 +6,7 @@ import { CreateMovieController } from "@modules/movies/useCases/createMovie/Crea
 import { DeleteMovieController } from "@modules/movies/useCases/deleteMovie/DeleteMovieController";
 import { GetMovieController } from "@modules/movies/useCases/getMovie/GetMovieController";
 import { ListMoviesController } from "@modules/movies/useCases/listMovies/ListMoviesController";
+import { SendMovieReleaseReminderController } from "@modules/movies/useCases/sendMovieReleaseReminder/SendMovieReleaseReminderController";
 import { UpdateMovieController } from "@modules/movies/useCases/updateMovie/UpdateMovieController";
 import { ensureAuthenticated } from "@shared/infra/http/middlewares/ensureAuthenticated";
 
@@ -17,6 +18,8 @@ const updateMovieController = new UpdateMovieController();
 const listMoviesController = new ListMoviesController();
 const getMovieController = new GetMovieController();
 const deleteMovieController = new DeleteMovieController();
+const sendMovieReleaseReminderController =
+  new SendMovieReleaseReminderController();
 
 moviesRoutes.post(
   "/",
@@ -43,5 +46,11 @@ moviesRoutes.get("/", ensureAuthenticated, listMoviesController.handle);
 moviesRoutes.get("/:id", ensureAuthenticated, getMovieController.handle);
 
 moviesRoutes.delete("/:id", ensureAuthenticated, deleteMovieController.handle);
+
+moviesRoutes.post(
+  "/:id/send-release-reminder",
+  ensureAuthenticated,
+  sendMovieReleaseReminderController.handle
+);
 
 export { moviesRoutes };

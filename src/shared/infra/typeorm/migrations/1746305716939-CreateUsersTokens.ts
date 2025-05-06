@@ -8,16 +8,16 @@ export class CreateUsersTokens1746305716939 implements MigrationInterface {
         columns: [
           {
             name: "id",
-            type: "varchar(255)",
+            type: "varchar",
             isPrimary: true,
           },
           {
             name: "refresh_token",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "user_id",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "expires_date",

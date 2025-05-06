@@ -102,11 +102,18 @@ Abra o arquivo .env e ajuste as configurações conforme seu ambiente:
 
 ```
 # Servidor
-PORT=3333
 APP_API_URL=http://localhost:3333
 
-# Armazenamento de imagem (escolha local ou s3 para amazon)
-disk=[local | s3]
+## AWS Credentials
+AWS_ACCESS_KEY_ID=
+AWS_BUCKET_URL=https://gribeiro-s3.s3.sa-east-1.amazonaws.com
+AWS_SECRET_ACCESS_KEY=
+AWS_BUCKET=gribeiro-s3
+AWS_BUCKET_REGION=sa-east-1
+AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE=1 node my_program.js
+
+# s3 or local
+disk=s3
 ```
 
 ### 4. Configure o banco de dados

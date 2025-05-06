@@ -851,6 +851,39 @@
     }
   },
   "components": {
+    "parameters": {
+      "RateLimiting": {
+        "name": "x-ratelimit-limit",
+        "in": "header",
+        "description": "Número máximo de requisições permitidas em um período",
+        "required": false,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    },
+    "responses": {
+      "TooManyRequests": {
+        "description": "Muitas requisições enviadas",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Muitas requisições. Por favor, tente novamente mais tarde."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",

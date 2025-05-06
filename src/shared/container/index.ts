@@ -11,9 +11,6 @@ import { IGenresRepository } from "@modules/genres/repositories/IGenresRepositor
 import { MoviesRepository } from "@modules/movies/infra/typeorm/repositories/MoviesRepository";
 import { IMoviesRepository } from "@modules/movies/repositories/IMoviesRepository";
 
-import { IMailProvider } from "./providers/MailProvider/IMailProvider";
-import { NodemailerProvider } from "./providers/MailProvider/implementations/NodemailerProvider";
-
 container.registerSingleton<IUsersRepository>(
   "UsersRepository",
   UsersRepository
@@ -37,5 +34,3 @@ container.registerSingleton<IGenresRepository>(
   "GenresRepository",
   GenresRepository
 );
-
-container.registerSingleton<IMailProvider>("MailProvider", NodemailerProvider);

@@ -8,16 +8,16 @@ export class CreateGenres1746308145532 implements MigrationInterface {
         columns: [
           {
             name: "id",
-            type: "varchar(255)",
+            type: "varchar",
             isPrimary: true,
           },
           {
             name: "user_id",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "title",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "created_at",

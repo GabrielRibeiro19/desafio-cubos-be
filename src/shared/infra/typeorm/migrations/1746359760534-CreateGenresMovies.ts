@@ -8,20 +8,20 @@ export class CreateGenresMovies1746359760534 implements MigrationInterface {
         columns: [
           {
             name: "id",
-            type: "varchar(255)",
+            type: "varchar",
             isPrimary: true,
           },
           {
             name: "movie_id",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "genre_id",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "user_id",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "created_at",

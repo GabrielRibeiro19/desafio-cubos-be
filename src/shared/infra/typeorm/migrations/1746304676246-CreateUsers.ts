@@ -8,21 +8,21 @@ export class CreateUsers1746304676246 implements MigrationInterface {
         columns: [
           {
             name: "id",
-            type: "varchar(255)",
+            type: "varchar",
             isPrimary: true,
           },
           {
             name: "name",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "email",
-            type: "varchar(255)",
+            type: "varchar",
             isUnique: true,
           },
           {
             name: "password",
-            type: "varchar(255)",
+            type: "varchar",
           },
           {
             name: "created_at",

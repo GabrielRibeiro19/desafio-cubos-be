@@ -218,6 +218,20 @@ class MoviesRepository implements IMoviesRepository {
   async deleteById(id: string): Promise<void> {
     await this.repository.delete(id);
   }
+
+  // Implementar o método
+  async findByReleaseDate(startDate: Date, endDate: Date): Promise<Movie[]> {
+    const movies = await this.repository
+      .createQueryBuilder("movie")
+      .leftJoinAndSelect("movie.genres", "genre")
+      .where("movie.release_date BETWEEN :startDate AND :endDate", {
+        startDate,
+        endDate,
+      })
+      .getMany();
+
+    return movies;
+  }
 }
 
 export { MoviesRepository };

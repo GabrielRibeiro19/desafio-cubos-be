@@ -11,6 +11,7 @@ interface IMoviesRepository {
   findById(id: string): Promise<Movie>;
   findByTitle(title: string, user_id: string): Promise<Movie>;
   deleteById(id: string): Promise<void>;
+  findByReleaseDate(startDate: Date, endDate: Date): Promise<Movie[]>;
 }
 
 export { IMoviesRepository };

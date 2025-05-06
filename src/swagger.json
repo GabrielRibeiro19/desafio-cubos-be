@@ -1,0 +1,862 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Filmes - Desafio Cubos",
+    "description": "API para gerenciamento de filmes e gêneros cinematográficos",
+    "version": "1.0.0",
+    "contact": {
+      "email": "gabriel.hsribeiro19@gmail.com"
+    }
+  },
+  "paths": {
+    "/sessions": {
+      "post": {
+        "tags": ["Autenticação"],
+        "summary": "Autenticação de usuário",
+        "description": "Gera um token JWT para acesso às rotas protegidas",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "usuario@email.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "senha123"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Autenticação bem-sucedida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/definitions/User"
+                    },
+                    "token": {
+                      "type": "string"
+                    },
+                    "refresh_token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Email ou senha incorretos"
+          }
+        }
+      }
+    },
+    "/refresh-token": {
+      "post": {
+        "tags": ["Autenticação"],
+        "summary": "Atualizar token de acesso",
+        "description": "Gera um novo token JWT usando o refresh token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string"
+                  }
+                },
+                "required": ["refreshToken"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "refresh_token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Refresh token inválido ou expirado"
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": ["Usuários"],
+        "summary": "Criar novo usuário",
+        "description": "Cadastra um novo usuário no sistema",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/UserCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos ou usuário já existe"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Usuários"],
+        "summary": "Listar usuários",
+        "description": "Lista todos os usuários cadastrados",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de usuários",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/profile": {
+      "get": {
+        "tags": ["Usuários"],
+        "summary": "Perfil do usuário",
+        "description": "Exibe os dados do usuário autenticado",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados do usuário",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      }
+    },
+    "/genres": {
+      "post": {
+        "tags": ["Gêneros"],
+        "summary": "Criar gênero",
+        "description": "Cria um novo gênero cinematográfico",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/GenreCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Gênero criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Genre"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na criação do gênero ou gênero já existe"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Gêneros"],
+        "summary": "Listar gêneros",
+        "description": "Lista todos os gêneros do usuário autenticado",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de gêneros",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Genre"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/genres/{id}": {
+      "delete": {
+        "tags": ["Gêneros"],
+        "summary": "Excluir gênero",
+        "description": "Remove um gênero pelo ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID do gênero"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Gênero removido com sucesso"
+          },
+          "404": {
+            "description": "Gênero não encontrado"
+          }
+        }
+      }
+    },
+    "/movies": {
+      "post": {
+        "tags": ["Filmes"],
+        "summary": "Criar filme",
+        "description": "Cadastra um novo filme",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "O Poderoso Chefão"
+                  },
+                  "original_title": {
+                    "type": "string",
+                    "example": "The Godfather"
+                  },
+                  "overview": {
+                    "type": "string",
+                    "example": "Don Vito Corleone é o chefe de uma família de Nova York..."
+                  },
+                  "tagline": {
+                    "type": "string",
+                    "example": "Uma oferta que não pode ser recusada."
+                  },
+                  "genre_ids": {
+                    "type": "string",
+                    "example": "12345,67890"
+                  },
+                  "trailer_url": {
+                    "type": "string",
+                    "example": "https://www.youtube.com/watch?v=sY1S34973zA"
+                  },
+                  "popularity": {
+                    "type": "number",
+                    "example": 8.7
+                  },
+                  "votes": {
+                    "type": "number",
+                    "example": 15000
+                  },
+                  "rating": {
+                    "type": "number",
+                    "example": 9.2
+                  },
+                  "release_date": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "1972-03-24"
+                  },
+                  "status": {
+                    "type": "string",
+                    "example": "Released"
+                  },
+                  "language": {
+                    "type": "string",
+                    "example": "en-US"
+                  },
+                  "budget": {
+                    "type": "number",
+                    "example": 6000000
+                  },
+                  "revenue": {
+                    "type": "number",
+                    "example": 245066411
+                  },
+                  "profit": {
+                    "type": "number",
+                    "example": 239066411
+                  },
+                  "duration": {
+                    "type": "number",
+                    "example": 175
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "image_secondary": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "title",
+                  "original_title",
+                  "overview",
+                  "genre_ids",
+                  "trailer_url",
+                  "popularity",
+                  "votes",
+                  "rating",
+                  "release_date",
+                  "status",
+                  "language",
+                  "budget",
+                  "revenue",
+                  "profit",
+                  "duration",
+                  "image"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Filme criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Movie"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao criar filme ou dados inválidos"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Filmes"],
+        "summary": "Listar filmes",
+        "description": "Lista todos os filmes do usuário com filtros opcionais",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Página atual"
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 15
+            },
+            "description": "Itens por página"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Busca por título ou título original"
+          },
+          {
+            "name": "genre_ids",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "IDs de gêneros separados por vírgula"
+          },
+          {
+            "name": "duration_range",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["less_than_1h", "between_1h_and_2h", "more_than_2h"]
+            },
+            "description": "Filtro por faixa de duração"
+          },
+          {
+            "name": "release_date[start_at]",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Data inicial de lançamento"
+          },
+          {
+            "name": "release_date[end_at]",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Data final de lançamento"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de filmes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/Movie"
+                      }
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "per_page": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "last_page": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/{id}": {
+      "get": {
+        "tags": ["Filmes"],
+        "summary": "Detalhes do filme",
+        "description": "Obtém detalhes de um filme específico",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID do filme"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do filme",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Movie"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Filme não encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Filmes"],
+        "summary": "Atualizar filme",
+        "description": "Atualiza os dados de um filme",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID do filme"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "original_title": {
+                    "type": "string"
+                  },
+                  "overview": {
+                    "type": "string"
+                  },
+                  "tagline": {
+                    "type": "string"
+                  },
+                  "genre_ids": {
+                    "type": "string",
+                    "description": "IDs separados por vírgula"
+                  },
+                  "trailer_url": {
+                    "type": "string"
+                  },
+                  "popularity": {
+                    "type": "number"
+                  },
+                  "votes": {
+                    "type": "number"
+                  },
+                  "rating": {
+                    "type": "number"
+                  },
+                  "release_date": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string"
+                  },
+                  "budget": {
+                    "type": "number"
+                  },
+                  "revenue": {
+                    "type": "number"
+                  },
+                  "profit": {
+                    "type": "number"
+                  },
+                  "duration": {
+                    "type": "number"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "image_secondary": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filme atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Movie"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao atualizar filme"
+          },
+          "404": {
+            "description": "Filme não encontrado"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Filmes"],
+        "summary": "Excluir filme",
+        "description": "Remove um filme pelo ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID do filme"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Filme removido com sucesso"
+          },
+          "404": {
+            "description": "Filme não encontrado"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "UserCreate": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "João Silva"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "example": "joao@email.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "senha123"
+        }
+      },
+      "required": ["name", "email", "password"]
+    },
+    "Genre": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string"
+        },
+        "user_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "GenreCreate": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Ação"
+        }
+      },
+      "required": ["title"]
+    },
+    "Movie": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string"
+        },
+        "original_title": {
+          "type": "string"
+        },
+        "overview": {
+          "type": "string"
+        },
+        "tagline": {
+          "type": "string"
+        },
+        "trailer_url": {
+          "type": "string"
+        },
+        "popularity": {
+          "type": "number"
+        },
+        "votes": {
+          "type": "number"
+        },
+        "rating": {
+          "type": "number"
+        },
+        "release_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "status": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "budget": {
+          "type": "number"
+        },
+        "revenue": {
+          "type": "number"
+        },
+        "profit": {
+          "type": "number"
+        },
+        "duration": {
+          "type": "number"
+        },
+        "image": {
+          "type": "string"
+        },
+        "image_secondary": {
+          "type": "string"
+        },
+        "user_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "genres": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Genre"
+          }
+        },
+        "formattedDuration": {
+          "type": "string",
+          "description": "Duração formatada para exibição (ex: '2h 15min')"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
